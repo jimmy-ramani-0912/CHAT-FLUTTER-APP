@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "390973941451",
+    "project_id": "chatapp-ca76c",
+    "storage_bucket": "chatapp-ca76c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390973941451:android:1cf2ad82b5f9b601f21d4e",
+        "android_client_info": {
+          "package_name": "com.example.groupchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390973941451-fotp632g0am228tencuks1sgp70updv2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVAUPE0M0dx-ErPLVkAJgy8ac5MkeSBp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390973941451-fotp632g0am228tencuks1sgp70updv2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
