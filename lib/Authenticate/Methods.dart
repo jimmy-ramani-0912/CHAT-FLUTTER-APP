@@ -39,6 +39,7 @@ Future<User?> createAccount(String name, String email, String password) async {
   }
 }
 
+//
 //CREATE LOGIN FUNCTION
 Future<User?> logIn(String email, String password) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
