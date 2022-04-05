@@ -36,7 +36,7 @@ dependencies:
   image_picker: ^0.8.4+9      #THIS IS FOR IMAGE PICKER
   firebase_storage: ^10.2.8   #THIS HELP TO UPLOAD ...
   uuid: ^3.0.6                #THIS GENERATE RANDOM STRING (HERE FOR GENERATING IMAGE NAME RANDOM )
-
+  animated_text_kit: ^4.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
