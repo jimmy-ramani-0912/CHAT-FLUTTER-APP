@@ -32,7 +32,7 @@ class _GroupChatHomeScreenState extends State<GroupChatHomeScreen> {
         .doc(uid)
         .collection('groups')
         .get()
-        .then((value) {  //FROM THIS WE GET THE USERS DETAILS AND WHICH WE STORE IN THE FIREBASE...ori
+        .then((value) {  //FROM THIS WE GET THE USERS DETAILS AND WHICH WE STORE IN THE FIREBASE...
       setState(() {
         groupList = value.docs;
         isLoading = false;

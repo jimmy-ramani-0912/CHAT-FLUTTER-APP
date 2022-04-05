@@ -181,8 +181,6 @@ class _GroupInfoState extends State<GroupInfo> {
                       ),
                     ),
 
-                    //
-
                     SizedBox(
                       height: size.height / 20,
                     ),

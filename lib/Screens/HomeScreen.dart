@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../group_chats/create_group/add_members.dart';
+import '../group_chats/group_chat_room.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -20,13 +23,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  List groupList = [];  //THIS LIST FOR SAVE THE AVAILABLE GROUP IN FIREBASE...
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this); // this would be initialise in HomeScreenState
     setStatus("Online");  // THIS IS FOR WHEN USER OPEN APP...
 
+    getAvailableGroups();
+
     //SO FROM THIS WE GET WHEN THE APP IS OPEN IT SHOW ONLINE STATUS...
+  }
+
+  void getAvailableGroups() async {
+    String uid = _auth.currentUser!.uid;
+
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('groups')
+        .get()
+        .then((value) {  //FROM THIS WE GET THE USERS DETAILS AND WHICH WE STORE IN THE FIREBASE...
+      setState(() {
+        groupList = value.docs;
+        isLoading = false;
+      });
+    });
   }
 
   void setStatus(String status) async {
@@ -104,78 +127,118 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 child: CircularProgressIndicator(),
               ),
             )
-          : Column(
-              children: [
-                SizedBox(
-                  height: size.height / 20,
-                ),
-                Container(
-                  height: size.height / 14,
-                  width: size.width,
-                  alignment: Alignment.center,
-                  child: Container(
+          : SingleChildScrollView(
+            child: Column(
+                children: [
+                  SizedBox(
+                    height: size.height / 20,
+                  ),
+                  Container(
                     height: size.height / 14,
-                    width: size.width / 1.15,
-                    child: TextField(
-                      controller: _search,
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    width: size.width,
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: size.height / 14,
+                      width: size.width / 1.15,
+                      child: TextField(
+                        controller: _search,
+                        decoration: InputDecoration(
+                          hintText: "Search",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: size.height / 50,
-                ),
-                ElevatedButton(
-                  onPressed: onSearch,
-                  child: Text("SEARCH"),
-                ),
-                SizedBox(
-                  height: size.height / 30,
-                ),
-                userMap != null
-                    ? ListTile(
-                        onTap: () {
-                          String roomId = chatRoomId(
-                              _auth.currentUser!.displayName!,
-                              userMap!['name']);
+                  SizedBox(
+                    height: size.height / 50,
+                  ),
+                  ElevatedButton(
+                    onPressed: onSearch,
+                    child: Text("SEARCH"),
+                  ),
+                  SizedBox(
+                    height: size.height / 30,
+                  ),
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ChatRoom(
-                                chatRoomId: roomId,
-                                //PASSING THE  USER INFO ....
-                                userMap: userMap!,
-                              ),
-                            ),
-                          );
-                        },
-                        leading: Icon(Icons.account_box, color: Colors.black),
-                        title: Text(
-                          userMap!['name'],
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
+
+
+
+// THIS SHOW THE RESULT WHICH WE SEARCH IN SEARCH
+
+                  userMap != null
+                      ? ListTile(
+                    onTap: () {
+                      String roomId = chatRoomId(
+                          _auth.currentUser!.displayName!,
+                          userMap!['name']);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ChatRoom(
+                            chatRoomId: roomId,
+                            //PASSING THE  USER INFO ....
+                            userMap: userMap!,
                           ),
                         ),
-                        subtitle: Text(userMap!['email']),
-                        trailing: Icon(Icons.chat, color: Colors.black),
-                      )
-                    : Container(),
-              ],
-            ),
+                      );
+                    },
+                    leading: Icon(Icons.account_box, color: Colors.black),
+                    title: Text(
+                      userMap!['name'],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    subtitle: Text(userMap!['email']),
+                    trailing: Icon(Icons.chat, color: Colors.black),
+                  )
+                      : Container(),
+
+//END
+                  SizedBox(
+                    height: size.height / 20,
+                  ),
+
+// THIS FOR UI SHOW ON HOME PAGE
+
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: groupList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => GroupChatRoom(
+                              groupName: groupList[index]['name'],
+                              groupChatId: groupList[index]['id'],
+                            ),
+                          ),
+                        ),
+                        leading: Icon(Icons.group),
+                        title: Text(groupList[index]['name']),
+                      );
+                    },
+                  ),
+
+                  // END OF UI OF GROPUS
+
+
+                ],
+              ),
+          ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.group),
+        child: Icon(Icons.create),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => GroupChatHomeScreen(),
+            builder: (_) => AddMembersInGroup(),
           ),
         ),
+        tooltip: "Create Group",
       ),
     );
   }
