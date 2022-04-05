@@ -14,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-
   //IT IS FOR STORING THE VALUE WHICH WE SEARCH....
   Map<String, dynamic>? userMap;
 
@@ -23,13 +22,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  List groupList = [];  //THIS LIST FOR SAVE THE AVAILABLE GROUP IN FIREBASE...
+  List groupList = []; //THIS LIST FOR SAVE THE AVAILABLE GROUP IN FIREBASE...
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this); // this would be initialise in HomeScreenState
-    setStatus("Online");  // THIS IS FOR WHEN USER OPEN APP...
+    WidgetsBinding.instance!
+        .addObserver(this); // this would be initialise in HomeScreenState
+    setStatus("Online"); // THIS IS FOR WHEN USER OPEN APP...
 
     getAvailableGroups();
 
@@ -44,7 +44,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         .doc(uid)
         .collection('groups')
         .get()
-        .then((value) {  //FROM THIS WE GET THE USERS DETAILS AND WHICH WE STORE IN THE FIREBASE...
+        .then((value) {
+      //FROM THIS WE GET THE USERS DETAILS AND WHICH WE STORE IN THE FIREBASE...
       setState(() {
         groupList = value.docs;
         isLoading = false;
@@ -53,14 +54,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void setStatus(String status) async {
-    await _firestore.collection('users').doc(_auth.currentUser!.uid).update({   //HERE WE CHECK USER IS IN OUR FIRESTORE THEN CHCK CURRENTUSER'S UID AND UPDATE IT
+    await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
+      //HERE WE CHECK USER IS IN OUR FIRESTORE THEN CHCK CURRENTUSER'S UID AND UPDATE IT
       "status": status,
     });
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) { //THIS IS USE FOR CHECKING CURRENT STATE
-    if (state == AppLifecycleState.resumed) { //resumed = IT REPRESENT FOR THE USER OPEN THE APP 2ND TIME AFTER BACKGROUND
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    //THIS IS USE FOR CHECKING CURRENT STATE
+    if (state == AppLifecycleState.resumed) {
+      //resumed = IT REPRESENT FOR THE USER OPEN THE APP 2ND TIME AFTER BACKGROUND
       // online
       setStatus("ONLINE");
     } else {
@@ -87,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() {
       isLoading = true;
     });
-
 
     //WHERE = IS USE FOR SEARCHING USER'S EMAIL AND CHACKING EQUALITY FROM 'USERS' COLLECTION OF FIRESTORE
     //GET() = ITS FOR GETTING
@@ -128,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
             )
           : SingleChildScrollView(
-            child: Column(
+              child: Column(
                 children: [
                   SizedBox(
                     height: size.height / 20,
@@ -162,40 +165,37 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     height: size.height / 30,
                   ),
 
-
-
-
 // THIS SHOW THE RESULT WHICH WE SEARCH IN SEARCH
 
                   userMap != null
                       ? ListTile(
-                    onTap: () {
-                      String roomId = chatRoomId(
-                          _auth.currentUser!.displayName!,
-                          userMap!['name']);
+                          onTap: () {
+                            String roomId = chatRoomId(
+                                _auth.currentUser!.displayName!,
+                                userMap!['name']);
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => ChatRoom(
-                            chatRoomId: roomId,
-                            //PASSING THE  USER INFO ....
-                            userMap: userMap!,
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => ChatRoom(
+                                  chatRoomId: roomId,
+                                  //PASSING THE  USER INFO ....
+                                  userMap: userMap!,
+                                ),
+                              ),
+                            );
+                          },
+                          leading: Icon(Icons.account_box, color: Colors.black),
+                          title: Text(
+                            userMap!['name'],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    leading: Icon(Icons.account_box, color: Colors.black),
-                    title: Text(
-                      userMap!['name'],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    subtitle: Text(userMap!['email']),
-                    trailing: Icon(Icons.chat, color: Colors.black),
-                  )
+                          subtitle: Text(userMap!['email']),
+                          trailing: Icon(Icons.chat, color: Colors.black),
+                        )
                       : Container(),
 
 //END
@@ -226,11 +226,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   ),
 
                   // END OF UI OF GROPUS
-
-
                 ],
               ),
-          ),
+            ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.create),
         onPressed: () => Navigator.of(context).push(
