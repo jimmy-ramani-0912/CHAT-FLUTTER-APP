@@ -1,4 +1,4 @@
-# chat_app
+# Discussion Forum Using Flutter & Firebase
 
 You can get the more information from the my below blog ...
 
